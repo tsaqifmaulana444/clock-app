@@ -12,18 +12,20 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context)!.settings.arguments as Map;
-    print(data);
+    data = data.isNotEmpty ? data : ModalRoute.of(context)!.settings.arguments as Map;
+    // print(data);
 
     // set background
+    Color? colorText = data['isDayTime'] ? const Color.fromARGB(255, 15, 15, 15) : Colors.grey[300];
     String bgImage = data['isDayTime'] ? 'day.png' : 'night.png';
-    Color bgColor = data['isDayTime'] ? Colors.blue : Colors.indigo[700] as Color;
+    Color bgColor =
+        data['isDayTime'] ? Colors.blue : Colors.indigo[700] as Color;
 
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
           child: Container(
-          decoration: BoxDecoration(
+        decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/$bgImage'),
             fit: BoxFit.cover,
@@ -34,20 +36,23 @@ class _HomeState extends State<Home> {
           child: Column(
             children: <Widget>[
               TextButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/location');
+                  onPressed: () async {
+                    dynamic result =
+                        await Navigator.pushNamed(context, '/location');
+                    setState(() {
+                      data = {
+                        'time': result['time'],
+                        'location': result['location'],
+                        'isDayTime': result['isDayTime'],
+                        'flag': result['flag'],
+                      };
+                    });
                   },
-                  icon: Icon(
-                    Icons.edit_location,
-                    color: Colors.grey[300]
-                  ),
+                  icon: Icon(Icons.edit_location, color: colorText),
                   label: Text(
                     "Edit Location",
-                    style: TextStyle(
-                      color: Colors.grey[300]
-                    ),
-                  )
-                ),
+                    style: TextStyle(color: colorText),
+                  )),
               const SizedBox(
                 height: 20.0,
               ),
@@ -56,10 +61,10 @@ class _HomeState extends State<Home> {
                   children: <Widget>[
                     Text(
                       data['location'],
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 28.0,
                         letterSpacing: 2.0,
-                        color: Colors.white,
+                        color: colorText,
                       ),
                     ),
                   ]),
@@ -68,9 +73,9 @@ class _HomeState extends State<Home> {
               ),
               Text(
                 data['time'],
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 66.0,
-                  color: Colors.white,
+                  color: colorText,
                 ),
               ),
             ],
