@@ -17,3 +17,5 @@ samples, guidance on mobile development, and a full API reference.
 
 API & Packages
 - https://worldtimeapi.org/api/timezone/
+
+special thanks for the amazing tutorial [iamshaunjp](https://github.com/iamshaunjp)
